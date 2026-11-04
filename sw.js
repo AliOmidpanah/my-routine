@@ -1,5 +1,5 @@
 /* روتین روزانه — Service Worker */
-const CACHE = 'routine-v1';
+const CACHE = 'routine-v5';
 const ASSETS = [
   './',
   './index.html',
