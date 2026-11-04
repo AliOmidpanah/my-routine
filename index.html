@@ -27,6 +27,7 @@ body{margin:0;background:var(--bg2);color:var(--txt);display:flex;justify-conten
 .today-small{font-size:11px;color:var(--muted)}
 .icon-btn{background:var(--card2);border:1px solid var(--line);color:var(--txt);width:38px;height:38px;border-radius:12px;cursor:pointer;font-size:18px}
 .icon-btn.small{width:30px;height:30px;font-size:16px}
+.icon-btn.danger{color:#ff7b7b;border-color:#ff7b7b66}
 .search{background:var(--card);border:1px solid var(--line);border-radius:14px;display:flex;gap:8px;align-items:center;padding:10px 12px;margin-bottom:12px}
 .search input{flex:1;background:transparent;border:none;outline:none;color:var(--txt)}
 .search input::placeholder{color:var(--muted)}
@@ -61,22 +62,25 @@ body.light .streak{background:rgba(255,255,255,.6)}
 .empty{text-align:center;color:var(--muted);margin:40px 0}
 .box-art{font-size:90px;filter:drop-shadow(0 10px 20px rgba(0,0,0,.35))}
 .list{display:flex;flex-direction:column;gap:10px}
-.card{background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;gap:10px;align-items:flex-start;border-right:6px solid #a9c6ff}
+.card{background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;gap:10px;align-items:flex-start;border-right:6px solid #a9c6ff;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.card:hover{box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.card:active{transform:scale(.98)}
 .card.done{opacity:.7}
 .card .ck{width:28px;height:28px;border-radius:9px;border:2px solid var(--accent);background:transparent;color:var(--txt);cursor:pointer;flex-shrink:0;font-size:15px}
 .card.done .ck{background:#22c55e;border-color:#22c55e;color:#fff}
 .card h4{margin:0 0 4px;font-size:14px}
 .card p{margin:0;font-size:12px;color:var(--muted2)}
 .card .time{font-size:11px;color:var(--muted);margin-top:6px}
-.card .del{margin-right:auto;background:none;border:none;cursor:pointer;opacity:.6;font-size:15px;flex-shrink:0}
 .card.note-card{border-right-color:var(--gold)}
+.card.note-card .note-body{flex:1;min-width:0}
 .fab{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:var(--accent);border:none;color:#fff;border-radius:14px;padding:13px 26px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(84,104,255,.5);width:max-content;max-width:90%;z-index:20}
 .fab.static{position:static;transform:none;display:block;width:100%;max-width:100%;margin:16px auto 0;box-sizing:border-box}
 .page{display:none}
 .page.active{display:block;animation:fade .2s}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
-.add-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.add-head h3{margin:0}
+.add-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:8px}
+.add-head h3{margin:0;flex:1}
+.add-head .actions{display:flex;gap:8px;align-items:center}
 .lbl{display:block;font-size:12px;color:var(--muted2);margin:12px 2px 6px}
 .field{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--txt);padding:12px;outline:none}
 .field:focus{border-color:var(--accent)}
@@ -117,8 +121,11 @@ body.light .row-field input{color-scheme:light}
 .sheet-back{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;z-index:50}
 .sheet-back.hidden,.hidden{display:none!important}
 .sheet{width:100%;max-width:430px;background:var(--card2);color:var(--txt);border:1px solid var(--line);border-radius:20px 20px 0 0;padding:16px;max-height:78vh;overflow:auto}
-.sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px}
+.sheet-head b{flex:1}
+.sheet-head .actions{display:flex;gap:8px;align-items:center}
 .sheet-head button{background:none;border:none;color:var(--txt);font-size:16px;cursor:pointer}
+.sheet-head button.danger{color:#ff7b7b}
 .opt{display:block;width:100%;background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:12px;margin:6px 0;cursor:pointer;text-align:right}
 .opt small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
 .opt.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -180,7 +187,7 @@ body.light .row-field input{color-scheme:light}
 <body>
 <div class="phone">
 
-  <!-- هدر: بدون زنگوله، اسم از پروفایل میاد -->
+  <!-- هدر -->
   <header class="topbar">
     <div class="user">
       <button class="avatar" id="avatarBtn" title="پروفایل">🧑‍💻</button>
@@ -236,11 +243,14 @@ body.light .row-field input{color-scheme:light}
     <button class="fab" id="openAddBtn">＋ روتین جدید</button>
   </main>
 
-  <!-- صفحه افزودن -->
+  <!-- صفحه افزودن/ویرایش روتین -->
   <main id="page-add" class="page">
     <div class="add-head">
-      <h3>افزودن روتین</h3>
-      <button class="icon-btn small" id="backHome">➔</button>
+      <h3 id="addPageTitle">افزودن روتین</h3>
+      <div class="actions">
+        <button class="icon-btn small danger hidden" id="deleteRoutineBtn" title="حذف روتین">🗑</button>
+        <button class="icon-btn small" id="backHome" title="بازگشت">➔</button>
+      </div>
     </div>
 
     <label class="lbl">عنوان</label>
@@ -291,7 +301,6 @@ body.light .row-field input{color-scheme:light}
       <button class="icon-btn small" id="statsNext">›</button>
     </div>
 
-    <!-- نمودار کلی ماه -->
     <div class="month-ring-card">
       <div class="ring-wrap big">
         <svg viewBox="0 0 120 120" class="ring">
@@ -398,7 +407,13 @@ body.light .row-field input{color-scheme:light}
 <!-- مودال یادداشت -->
 <div class="sheet-back hidden" id="noteSheetBack">
   <div class="sheet">
-    <div class="sheet-head"><b>یادداشت جدید</b><button id="closeNote" type="button">✕</button></div>
+    <div class="sheet-head">
+      <b id="noteSheetTitle">یادداشت جدید</b>
+      <div class="actions">
+        <button id="deleteNoteBtn" type="button" class="danger hidden" title="حذف یادداشت">🗑</button>
+        <button id="closeNote" type="button">✕</button>
+      </div>
+    </div>
     <label class="lbl" for="nTitle">عنوان</label>
     <input class="field" id="nTitle" maxlength="80" placeholder="عنوان یادداشت">
     <label class="lbl" for="nText">متن یادداشت</label>
@@ -426,7 +441,7 @@ body.light .row-field input{color-scheme:light}
 </div>
 
 
-<!-- راه‌اندازی اولیه: دریافت نام کاربر -->
+<!-- راه‌اندازی اولیه -->
 <div class="first-name-back hidden" id="firstNameBack">
   <div class="first-name-card" role="dialog" aria-modal="true" aria-labelledby="firstNameTitle">
     <div class="first-name-icon">👋</div>
@@ -469,19 +484,23 @@ routines.forEach(r=>{
   if(!r.repeatDays) r.repeatDays = repeatDaysFor(r.repeat);
   if(!r.startDate) r.startDate = r.date;
   if(!r.doneDates) r.doneDates = [];
-  if(r.done){ // مهاجرت از نسخه قبلی
+  if(r.done){
     try{ r.doneDates.push(dateKey(new Date(r.date))); }catch(e){}
     delete r.done;
   }
 });
 
 let selectedDate = new Date();
-let statsAnchor = new Date(); // یک روز داخل ماه شمسی موردنظر آمار
+let statsAnchor = new Date();
 let selectedColor = '#a9c6ff';
 let selectedRepeat = 'تکرار برای یک روز';
 let selectedRepeatDays = 1;
 let selectedPriority = 'متوسطه';
 let tempAvatar = profile.avatar;
+
+// حالت ویرایش
+let editingRoutineId = null;
+let editingNoteId = null;
 
 const $ = id => document.getElementById(id);
 const faNum = n => Number(n).toLocaleString('fa-IR');
@@ -490,14 +509,12 @@ const fmtFaDayMonth = d => new Intl.DateTimeFormat('fa-IR',{day:'numeric',month:
 const fmtFaWeekday = d => new Intl.DateTimeFormat('fa-IR',{weekday:'long'}).format(d);
 const fmtMonthYear = d => new Intl.DateTimeFormat('fa-IR',{month:'long',year:'numeric'}).format(d);
 
-// کلید یکتا برای هر روز (میلادی مبنا، نمایش شمسی)
 function dateKey(d){
   d = new Date(d);
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
 function startOfDay(d){ const x=new Date(d); x.setHours(0,0,0,0); return x; }
 
-// اجزای شمسی با اعداد لاتین برای محاسبه
 const _jFmt = new Intl.DateTimeFormat('fa-IR-u-nu-latn',{day:'numeric',month:'numeric',year:'numeric'});
 function jParts(d){
   const p = {};
@@ -550,7 +567,7 @@ $('themeDark').onclick=()=>{settings.theme='dark';save();applyTheme();};
 $('themeLight').onclick=()=>{settings.theme='light';save();applyTheme();};
 $('soundToggle').onchange=e=>{settings.sound=e.target.checked;save();};
 
-// ================= پروفایل و آواتارهای قشنگ =================
+// ================= پروفایل و آواتارها =================
 const AVATARS = [
   {e:'🦊',n:'روباه',bg:'linear-gradient(135deg,#f59e0b,#ef4444)'},
   {e:'🐼',n:'پاندا',bg:'linear-gradient(135deg,#334155,#94a3b8)'},
@@ -663,10 +680,10 @@ function routinesOn(date){
   return routines.filter(r=>occursOn(r, date));
 }
 
-// ================= نوار ۶۰ روزه شمسی =================
+// ================= نوار ۶۰ روزه =================
 function renderDays(){
   const box=$('daysStrip'); box.innerHTML='';
-  const start = new Date(); start.setDate(start.getDate()-10); // ۱۰ روز قبل تا ۵۰ روز بعد
+  const start = new Date(); start.setDate(start.getDate()-10);
   const selKey = dateKey(selectedDate);
   let selEl = null;
   for(let i=0;i<60;i++){
@@ -687,7 +704,7 @@ $('todayBtn').onclick=()=>{selectedDate=new Date();renderAll();};
 $('prevDay').onclick=()=>{selectedDate.setDate(selectedDate.getDate()-1);renderAll();};
 $('nextDay').onclick=()=>{selectedDate.setDate(selectedDate.getDate()+1);renderAll();};
 
-// ================= جملات انگیزشی + نصیحت هوشمند =================
+// ================= جملات انگیزشی =================
 const QUOTES = [
   'قطره‌قطره جمع گردد وانگهی دریا شود 🌊',
   'بهترین زمان شروع دیروز بود، دومین زمان خوب همین الانه 🌱',
@@ -724,7 +741,7 @@ const PRAISES = [
 function streakDays(){
   let s=0;
   const d=new Date();
-  if(routinesOn(d).length && !routinesOn(d).every(r=>isDoneOn(r,d))) { /* امروز ناقص: از دیروز بشمار */ d.setDate(d.getDate()-1); }
+  if(routinesOn(d).length && !routinesOn(d).every(r=>isDoneOn(r,d))) { d.setDate(d.getDate()-1); }
   else if(!routinesOn(d).length){ d.setDate(d.getDate()-1); }
   while(true){
     const occ = routinesOn(d);
@@ -774,11 +791,17 @@ function renderList(){
     const el=document.createElement('div');
     el.className='card'+(done?' done':'');
     el.style.borderRightColor=r.color||'#a9c6ff';
+    el.title = 'برای ویرایش کلیک کنید ✏️';
     el.innerHTML=`<button class="ck">${done?'✓':''}</button>
       <div><h4>${r.title}</h4><p>${r.desc||''}</p>
-      <div class="time">🕒 ${r.time||''} ${r.priority?'| '+r.priority:''} ${r.repeat?'| '+r.repeat:''}</div></div>
-      <button class="del">🗑</button>`;
-    el.querySelector('.ck').onclick=()=>{
+      <div class="time">🕒 ${r.time||''} ${r.priority?'| '+r.priority:''} ${r.repeat?'| '+r.repeat:''}</div></div>`;
+
+    // کلیک روی کارت → ویرایش
+    el.onclick = () => openEditRoutine(r);
+
+    // چک‌باکس
+    el.querySelector('.ck').onclick=(e)=>{
+      e.stopPropagation();
       toggleDone(r, selectedDate); beep();
       if(isDoneOn(r, selectedDate)){
         confetti({particleCount:90,spread:75,origin:{y:.6}});
@@ -791,17 +814,62 @@ function renderList(){
       }
       renderAll();
     };
-    el.querySelector('.del').onclick=()=>{
-      if(confirm('این روتین و همه تکرارهاش حذف بشه؟')){routines=routines.filter(x=>x.id!==r.id);save();renderAll();}
-    };
+
     list.appendChild(el);
   });
 }
 $('searchInput').oninput=renderList;
-$('openAddBtn').onclick=()=>go('add');
-$('backHome').onclick=()=>go('home');
 
-// ================= افزودن روتین + تقویم شمسی =================
+// ================= فرم روتین (افزودن + ویرایش) =================
+function resetAddForm(){
+  editingRoutineId = null;
+  $('fTitle').value = '';
+  $('fDesc').value = '';
+  $('fDate').value = localDateValue(new Date());
+  updateFaDate();
+  $('fTime').value = '12:00';
+  selectedRepeat = 'تکرار برای یک روز';
+  selectedRepeatDays = 1;
+  $('repeatLabel').textContent = selectedRepeat;
+  selectedPriority = 'متوسطه';
+  $('priorityLabel').textContent = selectedPriority;
+  selectedColor = '#a9c6ff';
+  $('colorRow').querySelectorAll('button').forEach(x=>x.classList.toggle('sel', x.dataset.c===selectedColor));
+  $('addPageTitle').textContent = 'افزودن روتین';
+  $('saveRoutine').textContent = 'ثبت روتین';
+  $('deleteRoutineBtn').classList.add('hidden');
+}
+
+function openEditRoutine(r){
+  editingRoutineId = r.id;
+  $('fTitle').value = r.title || '';
+  $('fDesc').value = r.desc || '';
+  const startDate = new Date(r.startDate || r.date || new Date());
+  $('fDate').value = localDateValue(startDate);
+  updateFaDate();
+  $('fTime').value = r.time || '12:00';
+
+  const rd = r.repeatDays || 1;
+  const match = REPEATS.find(x => x.d === rd);
+  if(match){ selectedRepeat = match.t; selectedRepeatDays = match.d; }
+  else { selectedRepeat = 'تکرار برای یک روز'; selectedRepeatDays = 1; }
+  $('repeatLabel').textContent = selectedRepeat;
+
+  selectedPriority = r.priority || 'متوسطه';
+  $('priorityLabel').textContent = selectedPriority;
+
+  selectedColor = r.color || '#a9c6ff';
+  $('colorRow').querySelectorAll('button').forEach(x=>x.classList.toggle('sel', x.dataset.c===selectedColor));
+
+  $('addPageTitle').textContent = 'ویرایش روتین';
+  $('saveRoutine').textContent = 'ذخیره تغییرات';
+  $('deleteRoutineBtn').classList.remove('hidden');
+  go('add');
+}
+
+$('openAddBtn').onclick = () => { resetAddForm(); go('add'); };
+$('backHome').onclick = () => { resetAddForm(); go('home'); };
+
 function localDateValue(d){
   const x=new Date(d);
   return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');
@@ -829,7 +897,7 @@ function renderJalaliCalendar(){
   const {jy,jm}=jParts(jalaliCalendarAnchor);
   $('jalaliMonthTitle').textContent=new Intl.DateTimeFormat('fa-IR',{month:'long',year:'numeric'}).format(jalaliCalendarAnchor);
   const first=firstDayOfJalaliMonth(jalaliCalendarAnchor);
-  const offset=(first.getDay()+1)%7; // شنبه اولین روز هفته
+  const offset=(first.getDay()+1)%7;
   const len=jMonthLen(jy,jm);
   const todayKey=localDateValue(new Date()), selectedKey=localDateValue(jalaliTempDate);
   const cells=[];
@@ -909,29 +977,71 @@ document.querySelectorAll('#prioritySheetBack .opt').forEach(b=>b.onclick=()=>{
   selectedPriority=b.dataset.p;$('priorityLabel').textContent=selectedPriority;
   $('prioritySheetBack').classList.add('hidden');
 });
+
 $('saveRoutine').onclick=()=>{
   const title=$('fTitle').value.trim();
   if(!title){toast('اول عنوان رو بنویس ✍️');return;}
   const start = formDateValue();
-  routines.push({
-    id:Date.now(), title,
-    desc:$('fDesc').value.trim(),
-    date:start.toISOString(), startDate:start.toISOString(),
-    time:$('fTime').value, repeat:selectedRepeat,
-    repeatDays:selectedRepeatDays,
-    priority:selectedPriority, color:selectedColor,
-    doneDates:[]
-  });
+  const isEdit = !!editingRoutineId;
+
+  if(isEdit){
+    const r = routines.find(x => x.id === editingRoutineId);
+    if(r){
+      r.title      = title;
+      r.desc       = $('fDesc').value.trim();
+      r.date       = start.toISOString();
+      r.startDate  = start.toISOString();
+      r.time       = $('fTime').value;
+      r.repeat     = selectedRepeat;
+      r.repeatDays = selectedRepeatDays;
+      r.priority   = selectedPriority;
+      r.color      = selectedColor;
+      // doneDates حفظ می‌شود
+    }
+  } else {
+    routines.push({
+      id:Date.now(), title,
+      desc:$('fDesc').value.trim(),
+      date:start.toISOString(), startDate:start.toISOString(),
+      time:$('fTime').value, repeat:selectedRepeat,
+      repeatDays:selectedRepeatDays,
+      priority:selectedPriority, color:selectedColor,
+      doneDates:[]
+    });
+    selectedDate = startOfDay(new Date(start));
+  }
+
+  editingRoutineId = null;
   save();
-  selectedDate=startOfDay(new Date(start));
-  $('fTitle').value='';$('fDesc').value='';
-  go('home');renderAll();
-  toast(selectedRepeatDays>1 ? `برای ${faNum(selectedRepeatDays)} روز ثبت شد ✅` : 'روتین ذخیره شد ✅');
-  beep();
-  confetti({particleCount:60,spread:60,origin:{y:.7}});
+  resetAddForm();
+  go('home');
+  renderAll();
+
+  if(isEdit){
+    toast('تغییرات ذخیره شد ✅');
+    beep();
+  } else {
+    toast(selectedRepeatDays>1 ? `برای ${faNum(selectedRepeatDays)} روز ثبت شد ✅` : 'روتین ذخیره شد ✅');
+    beep();
+    confetti({particleCount:60,spread:60,origin:{y:.7}});
+  }
 };
 
-// ================= آمار شمسی با نمودار دایره‌ای =================
+// حذف روتین از صفحه ویرایش
+$('deleteRoutineBtn').onclick = () => {
+  if(!editingRoutineId) return;
+  if(confirm('این روتین و همه تکرارهاش حذف بشه؟')){
+    routines = routines.filter(x => x.id !== editingRoutineId);
+    editingRoutineId = null;
+    save();
+    resetAddForm();
+    go('home');
+    renderAll();
+    toast('روتین حذف شد 🗑');
+  }
+};
+
+// ================= آمار =================
 const CIRC = 2*Math.PI*52;
 function ringSVG(pct){
   const off = CIRC*(1-pct/100);
@@ -940,13 +1050,11 @@ function ringSVG(pct){
     <circle cx="60" cy="60" r="52" class="ring-fg" style="stroke-dasharray:${CIRC};stroke-dashoffset:${off}"/>
   </svg><div class="ring-center"><b>${faNum(Math.round(pct))}٪</b></div>`;
 }
-// همه روزهای ماه شمسیِ statsAnchor
 function jalaliMonthDays(anchor){
   const {jy,jm} = jParts(anchor);
   const len = jMonthLen(jy,jm);
   const days=[];
   const d = new Date(anchor);
-  // برگرد به اول ماه
   while(true){ const p=jParts(d); if(p.jy===jy&&p.jm===jm&&p.jd===1) break; d.setDate(d.getDate()-1); }
   for(let i=0;i<len;i++){ const x=new Date(d); x.setDate(d.getDate()+i); days.push(x); }
   return {jy,jm,len,days};
@@ -984,22 +1092,41 @@ function renderStats(){
     box.appendChild(div);
   });
 }
-$('statsPrev').onclick=()=>{ // ماه شمسی قبل
+$('statsPrev').onclick=()=>{
   const {jy,jm} = jParts(statsAnchor);
   const d = new Date(statsAnchor);
   const jd = jParts(d).jd;
-  d.setDate(d.getDate()-jd); // روز آخر ماه قبل
+  d.setDate(d.getDate()-jd);
   statsAnchor = d; renderStats();
 };
-$('statsNext').onclick=()=>{ // ماه شمسی بعد
+$('statsNext').onclick=()=>{
   const {len} = jalaliMonthDays(statsAnchor);
   const jd = jParts(statsAnchor).jd;
   const d = new Date(statsAnchor);
-  d.setDate(d.getDate() + (len - jd + 1)); // روز اول ماه بعد
+  d.setDate(d.getDate() + (len - jd + 1));
   statsAnchor = d; renderStats();
 };
 
-// ================= یادداشت‌ها (مستقل) =================
+// ================= یادداشت‌ها (با ویرایش و حذف در مودال) =================
+function resetNoteForm(){
+  editingNoteId = null;
+  $('nTitle').value = '';
+  $('nText').value = '';
+  $('noteSheetTitle').textContent = 'یادداشت جدید';
+  $('saveNote').textContent = 'ذخیره ✓';
+  $('deleteNoteBtn').classList.add('hidden');
+}
+
+function openEditNote(n){
+  editingNoteId = n.id;
+  $('nTitle').value = n.title || '';
+  $('nText').value = n.text || '';
+  $('noteSheetTitle').textContent = 'ویرایش یادداشت';
+  $('saveNote').textContent = 'ذخیره تغییرات ✓';
+  $('deleteNoteBtn').classList.remove('hidden');
+  $('noteSheetBack').classList.remove('hidden');
+}
+
 function renderNotes(){
   const q=($('noteSearch').value||'').trim();
   const list=$('notesList'); list.innerHTML='';
@@ -1007,26 +1134,51 @@ function renderNotes(){
   $('notesEmpty').style.display=items.length?'none':'block';
   items.forEach(n=>{
     const el=document.createElement('div'); el.className='card note-card';
-    el.innerHTML=`<div><h4>📝 ${n.title||'بدون عنوان'}</h4><p>${(n.text||'').slice(0,120)}</p>
-      <div class="time">${fmtFaDate(new Date(n.createdAt))}</div></div>
-      <button class="del">🗑</button>`;
-    el.querySelector('.del').onclick=()=>{
-      if(confirm('این یادداشت حذف بشه؟')){notes=notes.filter(x=>x.id!==n.id);save();renderNotes();}
-    };
+    el.title = 'برای ویرایش کلیک کنید ✏️';
+    el.innerHTML=`<div class="note-body"><h4>📝 ${n.title||'بدون عنوان'}</h4><p>${(n.text||'').slice(0,120)}</p>
+      <div class="time">${fmtFaDate(new Date(n.createdAt))}</div></div>`;
+
+    el.onclick = () => openEditNote(n);
+
     list.appendChild(el);
   });
 }
 $('noteSearch').oninput=renderNotes;
-$('openNoteBtn').onclick=()=>{ $('nTitle').value=''; $('nText').value=''; $('noteSheetBack').classList.remove('hidden'); };
-$('closeNote').onclick=()=>$('noteSheetBack').classList.add('hidden');
-$('cancelNote').onclick=()=>$('noteSheetBack').classList.add('hidden');
+$('openNoteBtn').onclick=()=>{ resetNoteForm(); $('noteSheetBack').classList.remove('hidden'); };
+$('closeNote').onclick=()=>{ $('noteSheetBack').classList.add('hidden'); resetNoteForm(); };
+$('cancelNote').onclick=()=>{ $('noteSheetBack').classList.add('hidden'); resetNoteForm(); };
 $('saveNote').onclick=()=>{
   const t=$('nTitle').value.trim(), x=$('nText').value.trim();
   if(!t && !x){toast('یه چیزی بنویس ✍️');return;}
-  notes.push({id:Date.now(), title:t, text:x, createdAt:new Date().toISOString()});
-  save(); renderNotes();
+  const isEdit = !!editingNoteId;
+
+  if(isEdit){
+    const n = notes.find(z => z.id === editingNoteId);
+    if(n){ n.title = t; n.text = x; }
+  } else {
+    notes.push({id:Date.now(), title:t, text:x, createdAt:new Date().toISOString()});
+  }
+
+  save();
+  renderNotes();
   $('noteSheetBack').classList.add('hidden');
-  toast('یادداشت ذخیره شد ✅'); beep();
+  resetNoteForm();
+  toast(isEdit ? 'یادداشت ویرایش شد ✅' : 'یادداشت ذخیره شد ✅');
+  beep();
+};
+
+// حذف یادداشت از مودال ویرایش
+$('deleteNoteBtn').onclick = () => {
+  if(!editingNoteId) return;
+  if(confirm('این یادداشت حذف بشه؟')){
+    notes = notes.filter(x => x.id !== editingNoteId);
+    editingNoteId = null;
+    save();
+    renderNotes();
+    $('noteSheetBack').classList.add('hidden');
+    resetNoteForm();
+    toast('یادداشت حذف شد 🗑');
+  }
 };
 
 function renderAll(){renderDays();renderList();renderNotes();renderQuote();}
@@ -1052,7 +1204,7 @@ function finishFirstName(){
 $('firstNameSubmit').onclick=finishFirstName;
 $('firstNameInput').addEventListener('keydown',e=>{if(e.key==='Enter') finishFirstName();});
 
-// ================= نصب به‌عنوان اپ (PWA) =================
+// ================= PWA =================
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
